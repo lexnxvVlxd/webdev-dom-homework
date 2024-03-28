@@ -111,7 +111,7 @@ body {
     padding: 11px 22px;
   }
 
-  .--error {
+  .error {
     outline: 3px solid rgb(255, 48, 48);
   }
 

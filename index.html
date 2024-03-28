@@ -69,10 +69,10 @@
   leaveCommentButton.addEventListener('click', function (e) {
 
     if (inputNameElement.value === '') {
-      inputNameElement.classList.add('--error')
+      inputNameElement.classList.add('error')
       return
     } else if (inputСommentElement.value === '') {
-      inputСommentElement.classList.add('--error')
+      inputСommentElement.classList.add('error')
       return
     }
 
@@ -96,8 +96,8 @@
           </div>
         </li>`
 
-    inputNameElement.classList.remove('--error')
-    inputСommentElement.classList.remove('--error')
+    inputNameElement.classList.remove('error')
+    inputСommentElement.classList.remove('error')
     inputNameElement.value = ''
     inputСommentElement.value = ''
   });
