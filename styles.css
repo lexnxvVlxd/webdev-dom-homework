@@ -111,6 +111,10 @@ body {
     padding: 11px 22px;
   }
 
+  .--error {
+    outline: 3px solid rgb(255, 48, 48);
+  }
+
   .add-form-text {
     margin-top: 12px;
     padding: 22px;
