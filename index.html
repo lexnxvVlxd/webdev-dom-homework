@@ -66,6 +66,11 @@
   let numberLikes = 0
   const currentDate = new Date()
 
+  const getDate = () => {
+    return `${currentDate.toLocaleDateString()} ${currentDate.getHours()}:${currentDate.getMinutes()}`
+  }
+
+  
   leaveCommentButton.addEventListener('click', function (e) {
 
     if (inputNameElement.value === '') {
@@ -81,7 +86,7 @@
         <li class="comment">
           <div class="comment-header">
             <div>${inputNameElement.value}</div>
-            <div>${currentDate.toLocaleDateString()} ${currentDate.getHours()}:${currentDate.getMinutes()}</div>
+            <div>${getDate()}</div>
           </div>
           <div class="comment-body">
             <div class="comment-text">
@@ -101,7 +106,6 @@
     inputNameElement.value = ''
     inputСommentElement.value = ''
   });
-
 </script>
 
 </html>
