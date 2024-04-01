@@ -51,6 +51,7 @@
         id="input-comment"></textarea>
       <div class="add-form-row">
         <button disabled class="add-form-button add-form-button--disabled" id="leave-comment">Написать</button>
+        <button class="delete-form-button" type="button" id="delete">Удалить</button>
       </div>
     </div>
   </div>
@@ -62,10 +63,11 @@
   const inputNameElement = document.getElementById('input-name')
   const inputСommentElement = document.getElementById('input-comment')
   const leaveCommentButton = document.getElementById('leave-comment')
+  const deleteCommentButton = document.getElementById('delete')
   const listCommentsElement = document.getElementById('list-comments')
   const inputIsText = document.querySelectorAll('.input-is-text')
   const currentDate = new Date()
-  const regExp = /^[а-яА-ЯёЁ]+$/u
+  const regExp = /^[а-яА-ЯёЁa-zA-Z]+$/u
   let numberLikes = 0
 
   const getDate = () => {
@@ -80,7 +82,7 @@
       }
     });
   });
-  
+
   leaveCommentButton.addEventListener('click', function (e) {
 
     if (inputNameElement.value === '') {
@@ -116,7 +118,13 @@
     inputNameElement.value = ''
     inputСommentElement.value = ''
   });
-  
+
+  deleteCommentButton.addEventListener('click', function (e) {
+    const lastComm = listCommentsElement.innerHTML.lastIndexOf('<li class="comment">')
+    const newlistCommentsElement = listCommentsElement.innerHTML.slice(0, lastComm)
+    listCommentsElement.innerHTML = newlistCommentsElement
+  });
+
 </script>
 
 </html>

@@ -123,10 +123,13 @@ body {
 
   .add-form-row {
     display: flex;
+    align-items: center;
     justify-content: flex-end;
+    column-gap: 10px;
   }
 
-  .add-form-button {
+  .add-form-button,
+  .delete-form-button {
     margin-top: 24px;
     font-size: 24px;
     padding: 10px 20px;
@@ -136,10 +139,16 @@ body {
     cursor: pointer;
   }
 
+  .delete-form-button {
+    background-color: #f7224d;
+    color: #e4e4e4;
+  }
+
   .add-form-button--disabled {
     filter: grayscale();
   }
 
-  .add-form-button:hover {
+  .add-form-button:hover,
+  .delete-form-button:hover {
     opacity: 0.9;
   }
