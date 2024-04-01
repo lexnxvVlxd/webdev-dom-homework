@@ -46,11 +46,11 @@
       </li>
     </ul>
     <div class="add-form">
-      <input type="text" class="add-form-name" placeholder="Введите ваше имя" id="input-name" />
-      <textarea type="textarea" class="add-form-text" placeholder="Введите ваш коментарий" rows="4"
+      <input type="text" class="add-form-name input-is-text" placeholder="Введите ваше имя" id="input-name" />
+      <textarea type="textarea" class="add-form-text input-is-text" placeholder="Введите ваш коментарий" rows="4"
         id="input-comment"></textarea>
       <div class="add-form-row">
-        <button class="add-form-button" id="leave-comment">Написать</button>
+        <button disabled class="add-form-button add-form-button--disabled" id="leave-comment">Написать</button>
       </div>
     </div>
   </div>
@@ -63,13 +63,23 @@
   const inputСommentElement = document.getElementById('input-comment')
   const leaveCommentButton = document.getElementById('leave-comment')
   const listCommentsElement = document.getElementById('list-comments')
-  let numberLikes = 0
+  const inputIsText = document.querySelectorAll('.input-is-text')
   const currentDate = new Date()
+  const regExp = /^[а-яА-ЯёЁ]+$/u
+  let numberLikes = 0
 
   const getDate = () => {
     return `${currentDate.toLocaleDateString()} ${currentDate.getHours()}:${currentDate.getMinutes()}`
   }
 
+  inputIsText.forEach(element => {
+    element.addEventListener('input', function (e) {
+      if (regExp.test(element.value)) {
+        leaveCommentButton.classList.remove('add-form-button--disabled')
+        leaveCommentButton.removeAttribute('disabled')
+      }
+    });
+  });
   
   leaveCommentButton.addEventListener('click', function (e) {
 
@@ -106,6 +116,7 @@
     inputNameElement.value = ''
     inputСommentElement.value = ''
   });
+  
 </script>
 
 </html>

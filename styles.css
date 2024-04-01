@@ -136,6 +136,10 @@ body {
     cursor: pointer;
   }
 
+  .add-form-button--disabled {
+    filter: grayscale();
+  }
+
   .add-form-button:hover {
     opacity: 0.9;
   }
