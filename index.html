@@ -14,8 +14,7 @@
     </ul>
     <div class="add-form">
       <input type="text" class="add-form-name input-is-text" placeholder="Введите ваше имя" id="input-name" />
-      <textarea type="textarea" class="add-form-text input-is-text" placeholder="Введите ваш коментарий" rows="4"
-        id="input-comment"></textarea>
+      <textarea type="textarea" class="add-form-text input-is-text" placeholder="Введите ваш коментарий" rows="4" id="input-comment"></textarea>
       <div class="add-form-row">
         <button disabled class="add-form-button add-form-button--disabled" id="leave-comment">Написать</button>
         <button class="delete-form-button" type="button" id="delete">Удалить</button>
@@ -80,6 +79,21 @@
           renderComment()
         }
       });
+      
+    }
+  }
+
+  const initAnswerComment = () => {
+    const addFormText = document.querySelector('.add-form-text');
+    const listItemCommentEl = document.querySelectorAll('.comment');
+    const commentsTextEl = document.querySelectorAll('.comment-text');
+
+    for (const commentTextEl of commentsTextEl) {
+      commentTextEl.addEventListener('click', () => {
+      addFormText.innerHTML = `> ${comments[commentTextEl.dataset.index].comm}
+      
+      ${comments[commentTextEl.dataset.index].name}.,`
+    })
     }
   }
 
@@ -92,7 +106,7 @@
             <div>${comm.date}</div>
           </div>
           <div class="comment-body">
-            <div class="comment-text">
+            <div class="comment-text" data-index="${index}">
               ${comm.comm}
             </div>
           </div>
@@ -108,12 +122,22 @@
     listCommentsElement.innerHTML = commentHtml
 
     initlikeButtons()
-    
+    initAnswerComment()
   }
 
   renderComment()
 
   leaveCommentButton.addEventListener('click', function (e) {
+
+    const safeinputNameElement = inputNameElement.value.replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+
+    const safeinputСommentElement = inputСommentElement.value.replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
 
     if (inputNameElement.value === '') {
       inputNameElement.classList.add('error')
@@ -124,9 +148,9 @@
     }
 
     const comm = {
-      name: inputNameElement.value,
+      name: safeinputNameElement,
       date: getDate(),
-      comm: inputСommentElement.value,
+      comm: safeinputСommentElement,
       likes: 0,
       likesButton: false,
     }
@@ -137,12 +161,12 @@
     listCommentsElement.innerHTML = OldlistCommentsElement + `
         <li class="comment">
           <div class="comment-header">
-            <div>${inputNameElement.value}</div>
+            <div>${safeinputNameElement}</div>
             <div>${getDate()}</div>
           </div>
           <div class="comment-body">
             <div class="comment-text">
-              ${inputСommentElement.value}
+              ${safeinputСommentElement}
             </div>
           </div>
           <div class="comment-footer">
