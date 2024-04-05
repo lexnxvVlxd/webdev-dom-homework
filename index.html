@@ -41,14 +41,14 @@
       date: '12.02.22 12:18',
       comm: 'Это будет первый комментарий на этой странице',
       likes: 3,
-      likesButton: false,
+      islikesButton: false,
     },
     {
       name: 'Варвара Н',
       date: '13.02.22 19:22',
       comm: 'Мне нравится как оформлена эта страница! ❤',
       likes: 75,
-      likesButton: true,
+      islikesButton: true,
     }
   ]
 
@@ -57,7 +57,7 @@
   }
 
   inputIsText.forEach(element => {
-    element.addEventListener('input', function (e) {
+    element.addEventListener('input', function () {
       if (regExp.test(element.value)) {
         leaveCommentButton.classList.remove('add-form-button--disabled')
         leaveCommentButton.removeAttribute('disabled')
@@ -69,13 +69,13 @@
     const likeButtons = document.querySelectorAll('.like-button');
 
     for (const likeButton of likeButtons) {
-      likeButton.addEventListener('click', function (e) {
+      likeButton.addEventListener('click', function () {
         if (likeButton.dataset.valueComm === 'true') {
-          comments[likeButton.dataset.index].likesButton = false
+          comments[likeButton.dataset.index].islikesButton = false
           comments[likeButton.dataset.index].likes -= 1
           renderComment()
         } else {
-          comments[likeButton.dataset.index].likesButton = true
+          comments[likeButton.dataset.index].islikesButton = true
           comments[likeButton.dataset.index].likes += 1
           renderComment()
         }
@@ -99,7 +99,7 @@
           <div class="comment-footer">
             <div class="likes">
               <span class="likes-counter">${comm.likes}</span>
-              <button class="like-button ${comm.likesButton === true ? '-active-like' : ''}" data-value-comm="${comm.likesButton}" data-index="${index}" type="button"></button>
+              <button class="like-button ${comm.islikesButton ? '-active-like' : ''}" data-value-comm="${comm.islikesButton}" data-index="${index}" type="button"></button>
             </div>
           </div>
         </li>`
@@ -162,9 +162,8 @@
   });
 
   deleteCommentButton.addEventListener('click', function (e) {
-    const lastComm = listCommentsElement.innerHTML.lastIndexOf('<li class="comment">')
-    const newlistCommentsElement = listCommentsElement.innerHTML.slice(0, lastComm)
-    listCommentsElement.innerHTML = newlistCommentsElement
+    comments.pop()
+    renderComment()
   });
 
 </script>
