@@ -14,7 +14,8 @@
     </ul>
     <div class="add-form">
       <input type="text" class="add-form-name input-is-text" placeholder="Введите ваше имя" id="input-name" />
-      <textarea type="textarea" class="add-form-text input-is-text" placeholder="Введите ваш коментарий" rows="4" id="input-comment"></textarea>
+      <textarea type="textarea" class="add-form-text input-is-text" placeholder="Введите ваш коментарий" rows="4"
+        id="input-comment"></textarea>
       <div class="add-form-row">
         <button disabled class="add-form-button add-form-button--disabled" id="leave-comment">Написать</button>
         <button class="delete-form-button" type="button" id="delete">Удалить</button>
@@ -34,21 +35,21 @@
   const inputIsText = document.querySelectorAll('.input-is-text')
   const currentDate = new Date()
   const regExp = /^[а-яА-ЯёЁa-zA-Z]+$/u
-  const comments = [
-    {
-      name: 'Глеб Фокин',
-      date: '12.02.22 12:18',
-      comm: 'Это будет первый комментарий на этой странице',
-      likes: 3,
-      islikesButton: false,
-    },
-    {
-      name: 'Варвара Н',
-      date: '13.02.22 19:22',
-      comm: 'Мне нравится как оформлена эта страница! ❤',
-      likes: 75,
-      islikesButton: true,
-    }
+  let comments = [
+    // {
+    //   name: 'Глеб Фокин',
+    //   date: '12.02.22 12:18',
+    //   comm: 'Это будет первый комментарий на этой странице',
+    //   likes: 3,
+    //   islikesButton: false,
+    // },
+    // {
+    //   name: 'Варвара Н',
+    //   date: '13.02.22 19:22',
+    //   comm: 'Мне нравится как оформлена эта страница! ❤',
+    //   likes: 75,
+    //   islikesButton: true,
+    // }
   ]
 
   const getDate = () => {
@@ -79,7 +80,7 @@
           renderComment()
         }
       });
-      
+
     }
   }
 
@@ -90,10 +91,10 @@
 
     for (const commentTextEl of commentsTextEl) {
       commentTextEl.addEventListener('click', () => {
-      addFormText.innerHTML = `> ${comments[commentTextEl.dataset.index].comm}
+        addFormText.innerHTML = `> ${comments[commentTextEl.dataset.index].comm}
       
       ${comments[commentTextEl.dataset.index].name}.,`
-    })
+      })
     }
   }
 
@@ -102,12 +103,12 @@
       return `
         <li class="comment">
           <div class="comment-header">
-            <div>${comm.name}</div>
+            <div>${comm.author.name}</div>
             <div>${comm.date}</div>
           </div>
           <div class="comment-body">
             <div class="comment-text" data-index="${index}">
-              ${comm.comm}
+              ${comm.text}
             </div>
           </div>
           <div class="comment-footer">
@@ -127,17 +128,30 @@
 
   renderComment()
 
+  const fetchPromice = () => {
+    fetch("https://wedev-api.sky.pro/api/v1/vlad-leonov/comments", {
+      method: "GET"
+    }).then((response) => {
+      response.json().then((responseData) => {
+        comments = responseData.comments
+        renderComment()
+      })
+    })
+  }
+
+  fetchPromice()
+
   leaveCommentButton.addEventListener('click', function (e) {
 
     const safeinputNameElement = inputNameElement.value.replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
 
     const safeinputСommentElement = inputСommentElement.value.replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
 
     if (inputNameElement.value === '') {
       inputNameElement.classList.add('error')
@@ -154,7 +168,7 @@
       likes: 0,
       likesButton: false,
     }
-    
+
     comments.push(comm)
 
     const OldlistCommentsElement = listCommentsElement.innerHTML
@@ -177,7 +191,20 @@
           </div>
         </li>`
 
+    fetch("https://wedev-api.sky.pro/api/v1/vlad-leonov/comments", {
+      method: "POST",
+      body: JSON.stringify({
+        name: safeinputNameElement,
+        text: safeinputСommentElement
+      })
+    }).then((response) => {
+      response.json().then((responseData) => {
+        comments = responseData.comments
         renderComment()
+      })
+    })
+
+    renderComment()
 
     inputNameElement.classList.remove('error')
     inputСommentElement.classList.remove('error')
