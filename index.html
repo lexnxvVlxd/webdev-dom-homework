@@ -35,21 +35,8 @@
   const inputIsText = document.querySelectorAll('.input-is-text')
   const currentDate = new Date()
   const regExp = /^[а-яА-ЯёЁa-zA-Z]+$/u
+  const baseUrl = "https://wedev-api.sky.pro/api/v1/vlad-leonov/comments"
   let comments = [
-    // {
-    //   name: 'Глеб Фокин',
-    //   date: '12.02.22 12:18',
-    //   comm: 'Это будет первый комментарий на этой странице',
-    //   likes: 3,
-    //   islikesButton: false,
-    // },
-    // {
-    //   name: 'Варвара Н',
-    //   date: '13.02.22 19:22',
-    //   comm: 'Мне нравится как оформлена эта страница! ❤',
-    //   likes: 75,
-    //   islikesButton: true,
-    // }
   ]
 
   const getDate = () => {
@@ -100,11 +87,17 @@
 
   const renderComment = () => {
     const commentHtml = comments.map((comm, index) => {
+      const getDateApi = () => {
+        let getDateApi = Date.parse(comm.date)
+        let dateApi = new Date(getDateApi)
+        return `${dateApi.toLocaleDateString()} ${dateApi.getHours()}:${dateApi.getMinutes()}`
+      }
+
       return `
         <li class="comment">
           <div class="comment-header">
             <div>${comm.author.name}</div>
-            <div>${comm.date}</div>
+            <div>${getDateApi()}</div>
           </div>
           <div class="comment-body">
             <div class="comment-text" data-index="${index}">
@@ -129,11 +122,11 @@
   renderComment()
 
   const fetchPromice = () => {
-    fetch("https://wedev-api.sky.pro/api/v1/vlad-leonov/comments", {
+    fetch(baseUrl, {
       method: "GET"
     }).then((response) => {
       response.json().then((responseData) => {
-        comments = responseData.comments
+        comments = responseData.comments        
         renderComment()
       })
     })
@@ -191,11 +184,12 @@
           </div>
         </li>`
 
-    fetch("https://wedev-api.sky.pro/api/v1/vlad-leonov/comments", {
+    fetch(baseUrl, {
       method: "POST",
       body: JSON.stringify({
         name: safeinputNameElement,
-        text: safeinputСommentElement
+        text: safeinputСommentElement,
+        date: getDate()
       })
     }).then((response) => {
       response.json().then((responseData) => {
