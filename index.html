@@ -12,14 +12,16 @@
     <ul class="comments" id="list-comments">
       <!-- Список рендерится через JS -->
     </ul>
-    <div class="add-form">
-      <input type="text" class="add-form-name input-is-text" placeholder="Введите ваше имя" id="input-name" />
-      <textarea type="textarea" class="add-form-text input-is-text" placeholder="Введите ваш коментарий" rows="4"
-        id="input-comment"></textarea>
-      <div class="add-form-row">
-        <button disabled class="add-form-button add-form-button--disabled" id="leave-comment">Написать</button>
-        <button class="delete-form-button" type="button" id="delete">Удалить</button>
-      </div>
+    <div class="add">
+      <!-- <div class="add-form">
+        <input type="text" class="add-form-name input-is-text" placeholder="Введите ваше имя" id="input-name" />
+        <textarea type="textarea" class="add-form-text input-is-text" placeholder="Введите ваш коментарий" rows="4"
+          id="input-comment"></textarea>
+        <div class="add-form-row">
+          <button disabled class="add-form-button add-form-button--disabled" id="leave-comment">Написать</button>
+          <button class="delete-form-button" type="button" id="delete">Удалить</button>
+        </div>
+      </div> -->
     </div>
   </div>
 </body>
@@ -27,12 +29,10 @@
 <script>
   "use strict";
 
-  const inputNameElement = document.getElementById('input-name')
-  const inputСommentElement = document.getElementById('input-comment')
-  const leaveCommentButton = document.getElementById('leave-comment')
-  const deleteCommentButton = document.getElementById('delete')
   const listCommentsElement = document.getElementById('list-comments')
-  const inputIsText = document.querySelectorAll('.input-is-text')
+  const addElement = document.querySelector('.add')
+  const addFormElement = document.querySelector('.add-form')
+  const deleteCommentButton = document.getElementById('delete')
   const currentDate = new Date()
   const regExp = /^[а-яА-ЯёЁa-zA-Z]+$/u
   const baseUrl = "https://wedev-api.sky.pro/api/v1/vlad-leonov/comments"
@@ -42,15 +42,6 @@
   const getDate = () => {
     return `${currentDate.toLocaleDateString()} ${currentDate.getHours()}:${currentDate.getMinutes()}`
   }
-
-  inputIsText.forEach(element => {
-    element.addEventListener('input', function () {
-      if (regExp.test(element.value)) {
-        leaveCommentButton.classList.remove('add-form-button--disabled')
-        leaveCommentButton.removeAttribute('disabled')
-      }
-    });
-  });
 
   const initlikeButtons = () => {
     const likeButtons = document.querySelectorAll('.like-button');
@@ -85,6 +76,78 @@
     }
   }
 
+  const renderAddForm = () => {
+
+    addElement.innerHTML = `
+    <div class="add-form">
+        <input type="text" class="add-form-name input-is-text" placeholder="Введите ваше имя" id="input-name" />
+        <textarea type="textarea" class="add-form-text input-is-text" placeholder="Введите ваш коментарий" rows="4"
+          id="input-comment"></textarea>
+        <div class="add-form-row">
+          <button disabled class="add-form-button add-form-button--disabled" id="leave-comment">Написать</button>
+          <button class="delete-form-button" type="button" id="delete">Удалить</button>
+        </div>
+      </div>
+    `
+
+    const inputIsText = document.querySelectorAll('.input-is-text');
+
+    inputIsText.forEach(element => {
+      element.addEventListener('input', function () {
+        if (regExp.test(element.value)) {
+          leaveCommentButton.classList.remove('add-form-button--disabled')
+          leaveCommentButton.removeAttribute('disabled')
+        }
+      });
+    });
+
+    const leaveCommentButton = document.getElementById('leave-comment')
+    const inputNameElement = document.getElementById('input-name')
+    const inputСommentElement = document.getElementById('input-comment')
+
+    leaveCommentButton.addEventListener('click', function (e) {
+      const safeinputNameElement = inputNameElement.value.replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+
+      const safeinputСommentElement = inputСommentElement.value.replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+
+      if (inputNameElement.value === '') {
+        inputNameElement.classList.add('error')
+        return
+      } else if (inputСommentElement.value === '') {
+        inputСommentElement.classList.add('error')
+        return
+      }
+
+      addElement.innerHTML = '<p>Комментарий добавляется...</p>'
+
+      fetch(baseUrl, {
+        method: "POST",
+        body: JSON.stringify({
+          name: safeinputNameElement,
+          text: safeinputСommentElement,
+          date: getDate()
+        })
+      })
+        .then((response) => {
+          return response.json()
+        })
+        .then(() => {
+          fetchPromiceGet()
+        })
+
+      inputNameElement.classList.remove('error')
+      inputСommentElement.classList.remove('error')
+      inputNameElement.value = ''
+      inputСommentElement.value = ''
+    });
+  }
+
   const renderComment = () => {
     const commentHtml = comments.map((comm, index) => {
       const getDateApi = () => {
@@ -115,6 +178,7 @@
 
     listCommentsElement.innerHTML = commentHtml
 
+    renderAddForm()
     initlikeButtons()
     initAnswerComment()
   }
@@ -129,78 +193,20 @@
       .then((responseData) => {
         comments = responseData.comments
         renderComment()
+        renderAddForm()
       })
   }
+
+  renderAddForm()
 
   listCommentsElement.textContent = 'Пожалуйста подождите, загружаю комментарии...'
 
   fetchPromiceGet()
 
-  leaveCommentButton.addEventListener('click', function (e) {
-
-    const safeinputNameElement = inputNameElement.value.replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;")
-
-    const safeinputСommentElement = inputСommentElement.value.replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;")
-
-    if (inputNameElement.value === '') {
-      inputNameElement.classList.add('error')
-      return
-    } else if (inputСommentElement.value === '') {
-      inputСommentElement.classList.add('error')
-      return
-    }
-
-    const OldlistCommentsElement = listCommentsElement.innerHTML
-    listCommentsElement.innerHTML = OldlistCommentsElement + `
-        <li class="comment">
-          <div class="comment-header">
-            <div>${safeinputNameElement}</div>
-            <div>${getDate()}</div>
-          </div>
-          <div class="comment-body">
-            <div class="comment-text">
-              ${safeinputСommentElement}
-            </div>
-          </div>
-          <div class="comment-footer">
-            <div class="likes">
-              <span class="likes-counter"></span>
-              <button class="like-button"></button>
-            </div>
-          </div>
-        </li>`
-
-    fetch(baseUrl, {
-      method: "POST",
-      body: JSON.stringify({
-        name: safeinputNameElement,
-        text: safeinputСommentElement,
-        date: getDate()
-      })
-    })
-      .then((response) => {
-        return response.json()
-      })
-      .then(() => {
-        fetchPromiceGet()
-      })
-
-    inputNameElement.classList.remove('error')
-    inputСommentElement.classList.remove('error')
-    inputNameElement.value = ''
-    inputСommentElement.value = ''
-  });
-
-  deleteCommentButton.addEventListener('click', function (e) {
-    comments.pop()
-    renderComment()
-  });
+  // deleteCommentButton.addEventListener('click', function (e) {
+  //   comments.pop()
+  //   renderComment()
+  // });
 
 </script>
 
