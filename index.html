@@ -119,20 +119,20 @@
     initAnswerComment()
   }
 
-  renderComment()
-
-  const fetchPromice = () => {
+  const fetchPromiceGet = () => {
     fetch(baseUrl, {
       method: "GET"
-    }).then((response) => {
-      response.json().then((responseData) => {
-        comments = responseData.comments        
+    })
+      .then((response) => {
+        return response.json()
+      })
+      .then((responseData) => {
+        comments = responseData.comments
         renderComment()
       })
-    })
   }
 
-  fetchPromice()
+  fetchPromiceGet()
 
   leaveCommentButton.addEventListener('click', function (e) {
 
@@ -153,16 +153,6 @@
       inputСommentElement.classList.add('error')
       return
     }
-
-    const comm = {
-      name: safeinputNameElement,
-      date: getDate(),
-      comm: safeinputСommentElement,
-      likes: 0,
-      likesButton: false,
-    }
-
-    comments.push(comm)
 
     const OldlistCommentsElement = listCommentsElement.innerHTML
     listCommentsElement.innerHTML = OldlistCommentsElement + `
@@ -191,14 +181,13 @@
         text: safeinputСommentElement,
         date: getDate()
       })
-    }).then((response) => {
-      response.json().then((responseData) => {
-        comments = responseData.comments
-        renderComment()
-      })
     })
-
-    renderComment()
+      .then((response) => {
+        return response.json()
+      })
+      .then(() => {
+        fetchPromiceGet()
+      })
 
     inputNameElement.classList.remove('error')
     inputСommentElement.classList.remove('error')
