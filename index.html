@@ -13,15 +13,7 @@
       <!-- Список рендерится через JS -->
     </ul>
     <div class="add">
-      <!-- <div class="add-form">
-        <input type="text" class="add-form-name input-is-text" placeholder="Введите ваше имя" id="input-name" />
-        <textarea type="textarea" class="add-form-text input-is-text" placeholder="Введите ваш коментарий" rows="4"
-          id="input-comment"></textarea>
-        <div class="add-form-row">
-          <button disabled class="add-form-button add-form-button--disabled" id="leave-comment">Написать</button>
-          <button class="delete-form-button" type="button" id="delete">Удалить</button>
-        </div>
-      </div> -->
+      <!-- Форма нового комментария рендерится через JS -->
     </div>
   </div>
 </body>
@@ -32,7 +24,6 @@
   const listCommentsElement = document.getElementById('list-comments')
   const addElement = document.querySelector('.add')
   const addFormElement = document.querySelector('.add-form')
-  const deleteCommentButton = document.getElementById('delete')
   const currentDate = new Date()
   const regExp = /^[а-яА-ЯёЁa-zA-Z]+$/u
   const baseUrl = "https://wedev-api.sky.pro/api/v1/vlad-leonov/comments"
@@ -60,6 +51,14 @@
       });
 
     }
+  }
+
+  const initDeleteButtons = () => {
+    const deleteCommentButton = document.getElementById('delete')
+    deleteCommentButton.addEventListener('click', function (e) {
+    comments.pop()
+    renderComment()
+  });
   }
 
   const initAnswerComment = () => {
@@ -146,6 +145,8 @@
       inputNameElement.value = ''
       inputСommentElement.value = ''
     });
+
+    initDeleteButtons()
   }
 
   const renderComment = () => {
@@ -202,11 +203,6 @@
   listCommentsElement.textContent = 'Пожалуйста подождите, загружаю комментарии...'
 
   fetchPromiceGet()
-
-  // deleteCommentButton.addEventListener('click', function (e) {
-  //   comments.pop()
-  //   renderComment()
-  // });
 
 </script>
 
